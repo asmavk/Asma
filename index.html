@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASMA KHAN</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: black;
+      font-family: Arial, sans-serif;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    h1 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgb(255, 0, 106);
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+    
+      z-index: 1;
+    }
+
+  
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <h1>ASMA KHAN <br>ASMA KHAN <br>ASMA KHAN <br>
+    </h1>
+  
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    const numStars = 150;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Larger, glowing static stars
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2.5 + 0.5,
+        dx: 0,
+        dy: 0
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let star of stars) {
+        const gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.radius * 1.5);
+        gradient.addColorStop(0, "white");
+        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius * 1.5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+
+    function animate() {
+      for (let star of stars) {
+        star.x += star.dx;
+        star.y += star.dy;
+
+        // gently slow down movement
+        star.dx *= 0.95;
+        star.dy *= 0.95;
+      }
+      drawStars();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Hover effect: stars move slightly away from the mouse
+    canvas.addEventListener('mousemove', (e) => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+
+      for (let star of stars) {
+        const dx = star.x - mouseX;
+        const dy = star.y - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) {
+          star.dx += dx / 80;
+          star.dy += dy / 80;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
